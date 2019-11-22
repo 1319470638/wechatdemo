@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <color name="colorPrimary">#303030</color>
+    <color name="colorPrimaryDark">#303030</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="colorText" tools:ignore="MissingDefaultResource">#FFFFFF</color>
+    <color name="colorWhite">#FFFFFF</color>
+    <color name="textNormal">#A9A9A9</color>
+    <color name="textSelected">#45C01A</color>
+    <color name="textBlack">#454545</color>
+    <color name="transparent">#00000000</color>
+    <color name="pageBackground">#ebebeb</color>
+    <drawable name="drawablePressed">#D9D9D9</drawable>
+    <drawable name="drawableWhite">@color/colorWhite</drawable>
+    <drawable name="line">#000000</drawable>
+
+</resources>

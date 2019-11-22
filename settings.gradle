@@ -1,0 +1,2 @@
+include ':app', ':ChatLibrary'
+rootProject.name='WeChatDemo'

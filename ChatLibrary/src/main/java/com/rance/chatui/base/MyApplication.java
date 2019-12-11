@@ -5,8 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.DisplayMetrics;
 
+import com.baidu.mapapi.CoordType;
+import com.baidu.mapapi.SDKInitializer;
 
-public class MyApplication extends Application {
+
+public class MyApplication extends BaseApplication {
     private static MyApplication mInstance;
     public static Context mContext;
     /**
@@ -27,6 +30,7 @@ public class MyApplication extends Application {
         super.onCreate();
         mContext = getApplicationContext();
         mInstance = this;
+
         initScreenSize();
     }
 

@@ -1,5 +1,6 @@
 package com.rance.chatui.ui.fragment;
 
+
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
@@ -24,6 +25,7 @@ import android.widget.Toast;
 import com.rance.chatui.R;
 import com.rance.chatui.base.BaseFragment;
 import com.rance.chatui.enity.MessageInfo;
+import com.rance.chatui.ui.activity.BaiduMapActivity;
 import com.rance.chatui.ui.activity.ContactActivity;
 import com.rance.chatui.util.Constants;
 import com.rance.chatui.util.FileUtils;
@@ -45,7 +47,7 @@ public class ChatFunctionFragment extends BaseFragment {
     private static final int MY_PERMISSIONS_REQUEST_CALL_PHONE = 0xa6;
     private static final int MY_PERMISSIONS_REQUEST_WRITE_STORAGE_CODE = 0xa7;
     private static final int MY_PERMISSIONS_REQUEST_CAMERACODE = 0xa8;
-
+    private static final int LOCATION = 0xa9;
     private int output_X = 480;
     private int output_Y = 480;
     //    private File output;
@@ -119,7 +121,7 @@ public class ChatFunctionFragment extends BaseFragment {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: tvFile");
-               // Toast.makeText(mActivity,"功能模块开发中",Toast.LENGTH_SHORT).show();
+                // Toast.makeText(mActivity,"功能模块开发中",Toast.LENGTH_SHORT).show();
                 if (ContextCompat.checkSelfPermission(getActivity(),
                         Manifest.permission.WRITE_EXTERNAL_STORAGE)
                         != PackageManager.PERMISSION_GRANTED) {
@@ -136,7 +138,15 @@ public class ChatFunctionFragment extends BaseFragment {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: tvCloud");
-                Toast.makeText(mActivity,"功能模块开发中",Toast.LENGTH_SHORT).show();
+                if (ContextCompat.checkSelfPermission(getActivity(),
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(getActivity(),
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            MY_PERMISSIONS_REQUEST_WRITE_STORAGE_CODE);
+                } else {
+                    chooseFile();
+                }
             }
         });
 
@@ -144,7 +154,7 @@ public class ChatFunctionFragment extends BaseFragment {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: tvLocation");
-                Toast.makeText(mActivity,"功能模块开发中",Toast.LENGTH_SHORT).show();
+                startActivityForResult(new Intent(getActivity(), BaiduMapActivity.class),LOCATION);
             }
         });
 
@@ -199,6 +209,7 @@ public class ChatFunctionFragment extends BaseFragment {
     }
 
     public void onActivityResult(int req, int res, Intent data) {
+        Log.e(TAG, "onActivityResult: ->" + req);
         switch (req) {
             case CODE_TAKE_PHOTO:
                 if (res == Activity.RESULT_OK) {
@@ -245,7 +256,7 @@ public class ChatFunctionFragment extends BaseFragment {
                 if (res == Activity.RESULT_OK) {
                     try {
                         Uri uri = data.getData();
-                        Log.e(TAG, "onActivityResult: ->" + uri.getPath());
+
                         MessageInfo messageInfo = new MessageInfo();
                         messageInfo.setFilepath(FileUtils.getFileAbsolutePath(mActivity, uri));
                         messageInfo.setFileType(Constants.CHAT_FILE_TYPE_FILE);
@@ -258,7 +269,33 @@ public class ChatFunctionFragment extends BaseFragment {
                     Log.d(Constants.TAG, "失败");
                 }
                 break;
+            case LOCATION:
+                if (res == Activity.RESULT_OK) {
+                    try {
+                        if(data==null){
+                            return;
+                        }
+                        String filePath =data.getStringExtra("FilePath");
+                        String address =data.getStringExtra("Address");
+                        MessageInfo messageInfo = new MessageInfo();
+                       // messageInfo.setFilepath(FileUtils.getFileAbsolutePath(mActivity, filePath));
+                        messageInfo.setFilepath(filePath);
+                        messageInfo.setFileType(Constants.CHAT_FILE_TYPE_IMAGE);
+                        EventBus.getDefault().post(messageInfo);
 
+                        MessageInfo messageInfo1 = new MessageInfo();
+                        messageInfo1.setContent(address);
+                        messageInfo1.setFileType(Constants.CHAT_FILE_TYPE_TEXT);
+                        EventBus.getDefault().post(messageInfo1);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Log.d(Constants.TAG, e.getMessage());
+                    }
+                } else {
+                    Log.d(Constants.TAG, "失败");
+                }
+                break;
             default:
                 break;
         }

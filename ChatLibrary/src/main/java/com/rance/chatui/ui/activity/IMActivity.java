@@ -89,6 +89,7 @@ public class IMActivity extends AppCompatActivity {
     private String name=null;
     private int head_image=0;
     private int myHeadImg=0;
+    private boolean isSend = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -386,7 +387,7 @@ public class IMActivity extends AppCompatActivity {
         messageInfos = new ArrayList<>();
 
         MessageInfo messageInfo = new MessageInfo();
-        messageInfo.setContent("你好，欢迎使用Rance的聊天界面框架");
+        messageInfo.setContent("你好，很高兴见到你");
         messageInfo.setFileType(Constants.CHAT_FILE_TYPE_TEXT);
         messageInfo.setType(Constants.CHAT_ITEM_TYPE_LEFT);
         messageInfo.setHeader(headUrl+"");
@@ -424,6 +425,7 @@ public class IMActivity extends AppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void MessageEventBus(final MessageInfo messageInfo) {
+        isSend=true;
         messageInfo.setHeader(myHeadImg+"");
         messageInfo.setType(Constants.CHAT_ITEM_TYPE_RIGHT);
         messageInfo.setSendState(Constants.CHAT_ITEM_SENDING);
@@ -437,32 +439,36 @@ public class IMActivity extends AppCompatActivity {
                 chatAdapter.notifyDataSetChanged();
             }
         }, 2000);
-        new Handler().postDelayed(new Runnable() {
-            public void run() {
-                if(head_image!=0&&name!=null){
-                    MessageInfo message = new MessageInfo();
-                    message.setContent("这是模拟@消息回复   @我干嘛");
-                    message.setType(Constants.CHAT_ITEM_TYPE_LEFT);
-                    message.setFileType(Constants.CHAT_FILE_TYPE_TEXT);
-                    message.setHeader(head_image+"");
-                    messageInfos.add(message);
-                    chatAdapter.notifyItemInserted(messageInfos.size() - 1);
-                    chatList.scrollToPosition(chatAdapter.getItemCount() - 1);
-                    head_image=0;
-                    name=null;
-                }else {
-                    MessageInfo message = new MessageInfo();
-                    message.setContent("这是模拟消息回复");
-                    message.setType(Constants.CHAT_ITEM_TYPE_LEFT);
-                    message.setFileType(Constants.CHAT_FILE_TYPE_TEXT);
-                    message.setHeader(headImg+"");
-                    messageInfos.add(message);
-                    chatAdapter.notifyItemInserted(messageInfos.size() - 1);
-                    chatList.scrollToPosition(chatAdapter.getItemCount() - 1);
-                }
+        if(isSend){
+            new Handler().postDelayed(new Runnable() {
+                public void run() {
+                    isSend=false;
+                    if(head_image!=0&&name!=null){
+                        MessageInfo message = new MessageInfo();
+                        message.setContent("这是模拟@消息回复   @我干嘛");
+                        message.setType(Constants.CHAT_ITEM_TYPE_LEFT);
+                        message.setFileType(Constants.CHAT_FILE_TYPE_TEXT);
+                        message.setHeader(head_image+"");
+                        messageInfos.add(message);
+                        chatAdapter.notifyItemInserted(messageInfos.size() - 1);
+                        chatList.scrollToPosition(chatAdapter.getItemCount() - 1);
+                        head_image=0;
+                        name=null;
+                    }else {
+                        MessageInfo message = new MessageInfo();
+                        message.setContent("这是模拟消息回复");
+                        message.setType(Constants.CHAT_ITEM_TYPE_LEFT);
+                        message.setFileType(Constants.CHAT_FILE_TYPE_TEXT);
+                        message.setHeader(headImg+"");
+                        messageInfos.add(message);
+                        chatAdapter.notifyItemInserted(messageInfos.size() - 1);
+                        chatList.scrollToPosition(chatAdapter.getItemCount() - 1);
+                    }
 
-            }
-        }, 3000);
+                }
+            }, 3000);
+        }
+      
     }
 
     @Override
@@ -484,11 +490,12 @@ public class IMActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         Log.d(TAG, "onActivityResult: ");
         if(resultCode==2&&data!=null){
-            String s=editText.getText().toString();
-             name = data.getStringExtra("name");
+            String content=editText.getText().toString()+data.getStringExtra("name");
+
             head_image=data.getIntExtra("image",0);
             Log.d(TAG, "onActivityResult: image="+head_image);
-            editText.setText(s+name);
+            editText.setText(content);
+            editText.setSelection(content.length());//将光标移至文字末尾
         }
     }
 }

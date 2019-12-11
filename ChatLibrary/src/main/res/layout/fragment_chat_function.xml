@@ -68,7 +68,7 @@
             android:drawablePadding="5dp"
             android:drawableTop="@mipmap/icon_cloud"
             android:gravity="center"
-            android:text="我的资料" />
+            android:text="文件" />
 
         <TextView
             android:id="@+id/chat_blank_one"

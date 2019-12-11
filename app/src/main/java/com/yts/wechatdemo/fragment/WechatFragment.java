@@ -81,6 +81,8 @@ public class WechatFragment extends Fragment implements WechatFragmentAdapter.On
 
     @Override
     public void onItemClick(View view, int position) {
+        mDatas.get(position).msg_status=true;
+        mAdapter.notifyItemChanged(position);
         Intent intent =new Intent(getActivity(), IMActivity.class);
         intent.putExtra("headImg",mDatas.get(position).drawable_id);
         intent.putExtra("title",mDatas.get(position).title);

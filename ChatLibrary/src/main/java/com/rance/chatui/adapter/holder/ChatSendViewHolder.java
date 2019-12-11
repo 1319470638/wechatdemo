@@ -125,11 +125,11 @@ public class ChatSendViewHolder extends BaseViewHolder<MessageInfo> {
                     paint.setColor(ContextCompat.getColor(mContext, R.color.chat_send_text));
                     // 计算textview在屏幕上占多宽
                     int len = (int) paint.measureText(chatItemContentText.getText().toString().trim());
-                    if (len < Utils.dp2px(mContext, 200)){
+                   /* if (len < Utils.dp2px(mContext, 200)){
                         layoutParams.width = len + Utils.dp2px(mContext, 30);
                     } else {
                         layoutParams.width = LinearLayout.LayoutParams.MATCH_PARENT;
-                    }
+                    }*/
                     layoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT;
                     chatItemLayoutContent.setLayoutParams(layoutParams);
                     break;
@@ -288,7 +288,7 @@ public class ChatSendViewHolder extends BaseViewHolder<MessageInfo> {
                 onItemClickListener.onImageClick(chatItemContentImage, (Integer) itemView.getTag());
             }
         });
-        chatItemLayoutContent.setOnClickListener(new View.OnClickListener() {
+        chatItemVoice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onItemClickListener.onVoiceClick(chatItemVoice, (Integer) itemView.getTag());
